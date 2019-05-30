@@ -3,8 +3,8 @@ from selenium.webdriver import Firefox
 from selenium.webdriver.firefox.options import Options
 
 # FuelTypeDDL, 37 is unleaded
-# url = 'https://www.racq.com.au/cars-and-driving/driving/fair-fuel-prices?phracq_body_1_phracq_contentcontainer_0_FuelTypesDDL=37&location=4122&locationTypeId=2'
-url = 'https://www.racq.com.au/cars-and-driving/driving/fair-fuel-prices?phracq_body_1_phracq_contentcontainer_0_FuelTypesDDL=37&location=4000&locationTypeId=2'
+url = 'https://www.racq.com.au/cars-and-driving/driving/fair-fuel-prices?phracq_body_1_phracq_contentcontainer_0_FuelTypesDDL=37&location=4122&locationTypeId=2'
+# url = 'https://www.racq.com.au/cars-and-driving/driving/fair-fuel-prices?phracq_body_1_phracq_contentcontainer_0_FuelTypesDDL=37&location=4000&locationTypeId=2'
 
 browser = Firefox()
 response = browser.get(url)
