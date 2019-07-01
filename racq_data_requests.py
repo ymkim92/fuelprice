@@ -1,8 +1,17 @@
+#!/usr/bin/env python3
 import requests
 import json
 import numpy as np
+import pathlib
+import shutil
 
+
+csv_path = '/home/ykim/log/'
 csv_filename = 'fuel.csv'
+log_filename = 'fuel.log'
+csv_prev_prices = 'prevprices.csv'
+csv_curr_prices = 'currprices.csv'
+
 url = 'https://www.racq.com.au/ajaxPages/FuelPricesapi.ashx'
 
 params = dict(
@@ -12,35 +21,79 @@ params = dict(
     includesurrounding='1'
 )
 
-resp = requests.get(url=url, params=params)
-data = resp.json()
-# print(json.dumps(data, indent=4))
-today_list = []
-cnt = 0
-for station in data['Stations']:
-    # today_list.append(station["Price"])
-    today_list.append(float(station["Price"]))
-    if cnt < 5:
-        print('{} {}'.format(station["Price"], station['Name']))
+def get_list():
+    resp = requests.get(url=url, params=params)
+    data = resp.json()
+    # print(json.dumps(data, indent=4))
+    today_list = [ data['Timestamp'].split('.')[0]]
+    cnt = 0
+    for station in data['Stations']:
+        # today_list.append(station["Price"])
+        today_list.append(float(station["Price"]))
+        if cnt < 5:
+            print('{} {}'.format(station["Price"], station['Name']))
 
-    cnt += 1
+        cnt += 1
 
-price_string = ', '.join([str(i) for i in today_list])
-price_string = '{}, {}'.format(
-data['Timestamp'].split('T')[0],
-price_string)
+    return today_list
+
+def save_list(prices):
+    price_string = prices[0]
+    price_string += ', '.join([str(i) for i in prices[1:]])
+
+    with open(csv_path+csv_filename, 'a') as f:
+        f.write(price_string)
+        f.write('\n')
+
+    path = pathlib.Path(csv_path+csv_curr_prices)
+    if path.exists():
+        shutil.copy(csv_path+csv_curr_prices, csv_path+csv_prev_prices)
+
+    with open(csv_path+csv_curr_prices, 'w') as f:
+        f.write(price_string)
+        f.write('\n')
 
 
-with open(csv_filename, 'a') as f:
-    f.write(price_string)
-    f.write('\n')
+def is_price_up():
+    ret = False
+    cause = []
+    with open(csv_path+csv_curr_prices, 'r') as f:
+        curr_prices = f.readline()
+        curr_stats = get_stats(curr_prices.split(','))
 
-# print(today_list)
-print('{}, {}, {}, {}, {}, {}'.format(
-    data['Timestamp'].split('T')[0],
-    len(today_list),
-    np.min(today_list),
-    np.max(today_list),
-    np.mean(today_list),
-    np.std(today_list),
-))
+    with open(csv_path+csv_prev_prices, 'r') as f:
+        prev_prices = f.readline()
+        prev_stats = get_stats(prev_prices.split(','))
+
+    if curr_stats[1] > prev_stats[1]:
+        ret = True
+        cause.append('min')
+
+    if curr_stats[2] > prev_stats[2]:
+        ret = True
+        cause.append('max')
+
+    if curr_stats[3] > prev_stats[3]:
+        ret = True
+        cause.append('avg')
+
+    if curr_stats[4] > prev_stats[4]:
+        ret = True
+        cause.append('std')
+
+    return ret, cause, prev_stats, curr_stats
+
+    
+
+def get_stats(price_list):
+    flist = [float(x) for x in price_list[1:]]
+    return ( len(flist), np.min(flist), np.max(flist), np.mean(flist), np.std(flist) )
+
+if __name__ == '__main__':
+    plist = get_list()
+    save_list(plist)
+    ret, cause_list, prev, curr = is_price_up()
+    if ret:
+        print(cause_list)
+        print(prev)
+        print(prev)
