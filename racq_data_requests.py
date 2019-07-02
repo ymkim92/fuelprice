@@ -4,6 +4,8 @@ import json
 import numpy as np
 import pathlib
 import shutil
+import slack
+from configparser import ConfigParser
 
 
 csv_path = '/home/ykim/log/'
@@ -38,7 +40,7 @@ def get_list():
     return today_list
 
 def save_list(prices):
-    price_string = prices[0]
+    price_string = prices[0] + ', '
     price_string += ', '.join([str(i) for i in prices[1:]])
 
     with open(csv_path+csv_filename, 'a') as f:
@@ -89,11 +91,22 @@ def get_stats(price_list):
     flist = [float(x) for x in price_list[1:]]
     return ( len(flist), np.min(flist), np.max(flist), np.mean(flist), np.std(flist) )
 
+def send_notification(msg):
+    parser = ConfigParser()
+    parser.read('/home/ykim/devel/python/fuelprice/token.cfg')
+    token = parser.get('slack', 'token')
+
+    client = slack.WebClient(token)
+
+    response = client.chat_postMessage(
+        channel='#notification',
+        text=msg)
+    assert response["ok"]
+
 if __name__ == '__main__':
     plist = get_list()
     save_list(plist)
     ret, cause_list, prev, curr = is_price_up()
     if ret:
-        print(cause_list)
-        print(prev)
-        print(prev)
+        msg = '{}\n{}\n{}\n'.format(cause_list, prev, curr)
+        send_notification(msg)
