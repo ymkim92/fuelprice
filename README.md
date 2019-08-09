@@ -2,6 +2,12 @@
 
 It collects data from [RACQ web site](https://www.racq.com.au/cars-and-driving/driving/fair-fuel-prices).
 
+## Installation
+
+```
+pip install https://github.com/ymkim92/fuelprice/archive/master.zip
+```
+
 ## Usage
 
 ```
