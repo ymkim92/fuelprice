@@ -1,0 +1,4 @@
+#!/usr/bin/env python
+
+import fuel_price
+fuel_price.main()
