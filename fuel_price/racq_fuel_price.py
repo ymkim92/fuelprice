@@ -9,11 +9,14 @@ import logging
 logging.basicConfig()
 log = logging.getLogger(__name__)
 
-url = 'https://www.racq.com.au/ajaxPages/FuelPricesapi.ashx'
+# url = 'https://www.racq.com.au/ajaxPages/FuelPricesapi.ashx'
+
+url = 'https://www.racq.com.au/ajaxPages/fuelprice/FuelPricesapi.ashx'
 
 params = dict(
     fueltype='37',  # 91
-    location='4122',
+    lat='-27.5480097',
+    lng='153.09129859999996',
     includesurrounding='1'
 )
 
@@ -26,9 +29,10 @@ fuel_dict = {
     'LPG': "41",
 }
 
-def get_list(fueltype, location):
+def get_list(fueltype, lat, lon):
     params['fueltype'] = fueltype
-    params['location'] = location
+    params['lat'] = lat 
+    params['lng'] = lon 
     log.debug('send requests')
     resp = requests.get(url=url, params=params)
     log.debug('received requests')
@@ -66,7 +70,8 @@ def get_arguments():
     parser.add_argument('fuel_type', type=str, 
         choices=list(fuel_dict.keys()), 
         help='Fuel type')
-    parser.add_argument('post_code', type=str, help='Post code')
+    parser.add_argument('lat', type=str, help='latitude')
+    parser.add_argument('lon', type=str, help='longitude')
     parser.add_argument('-l', '--log', type=str, 
         choices=['INFO', 'DEBUG', "WARNING", "ERROR"],    
         default='ERROR',
@@ -97,7 +102,7 @@ def main():
     set_log_level(args.log)
 
     fuel = fuel_dict[args.fuel_type]
-    plist = get_list(fuel, args.post_code)
+    plist = get_list(fuel, args.lat, args.lon)
     if args.output == 'raw':
         pstr = convert_pricelist_to_string(plist)
         print(pstr)
