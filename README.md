@@ -12,14 +12,15 @@ pip install https://github.com/ymkim92/fuelprice/archive/master.zip
 
 ```
 usage: racq_fuel_price [-h] [-l {INFO,DEBUG,WARNING,ERROR}] [-o {stats,raw}]
-                       {E10,91,95,98,Diesel,LPG} post_code
+                       {E10,91,95,98,Diesel,LPG} lat lon
 
 Get fuel price from RACQ
 
 positional arguments:
   {E10,91,95,98,Diesel,LPG}
                         Fuel type
-  post_code             Post code
+  lat                   latitude
+  lon                   longitude
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -32,7 +33,7 @@ optional arguments:
 ## Example
 
 ```
-$ racq_fuel_price 91 4122 -l INFO
+$ racq_fuel_price 91 -27.5480097 153.09129859999996 -l INFO
 INFO:fuel_price.racq_fuel_price:124.9 7-Eleven Pinelands Road
 INFO:fuel_price.racq_fuel_price:124.9 7-Eleven Compton Rd
 INFO:fuel_price.racq_fuel_price:125.9 COLES EXPRESS SUNNYBANK
@@ -56,6 +57,6 @@ INFO:fuel_price.racq_fuel_price:127.5 7-Eleven Mackenzie
 ```
 
 ```
-$ racq_fuel_price 91 4122 -o raw
+$ racq_fuel_price 91 -27.5480097 153.09129859999996 -o raw
 2019-08-09T15:45:49, 124.9, 124.9, 125.9, 126.7, 126.9, 126.9, 127.5, 127.5, 127.5, 127.5, 127.5, 127.5, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 129.9, 134.9, 165.8, 165.9, 165.9, 165.9, 165.9, 165.9, 165.9, 165.9, 165.9
 ```
