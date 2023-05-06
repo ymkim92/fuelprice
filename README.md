@@ -8,6 +8,11 @@ It collects data from [RACQ web site](https://www.racq.com.au/cars-and-driving/d
 pip install https://github.com/ymkim92/fuelprice/archive/master.zip
 ```
 
+If you want to update, use this command:
+```
+pip install -U https://github.com/ymkim92/fuelprice/archive/master.zip
+```
+
 ## Usage
 
 ```
