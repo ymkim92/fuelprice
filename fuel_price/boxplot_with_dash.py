@@ -3,6 +3,7 @@ import plotly.express as px
 from datetime import datetime
 from typing import Optional, Union
 from plotly.graph_objects import Figure
+import argparse
 
 def load_data(file_path: str) -> pd.DataFrame:
     """Load and prepare the data from CSV file"""
@@ -61,11 +62,12 @@ def plot_petrol_prices(
     return fig
 
 # For web usage, you can create a function that handles the web interface
-def create_web_plot(start_time_str: Optional[str] = None, end_time_str: Optional[str] = None) -> Figure:
+def create_web_plot(csv_path: str, start_time_str: Optional[str] = None, end_time_str: Optional[str] = None) -> Figure:
     """
     Create plot for web display with optional time filtering
 
     Args:
+        csv_path: Path to the CSV file
         start_time_str: Start time in ISO format (YYYY-MM-DDTHH:MM:SS)
         end_time_str: End time in ISO format (YYYY-MM-DDTHH:MM:SS)
 
@@ -73,7 +75,7 @@ def create_web_plot(start_time_str: Optional[str] = None, end_time_str: Optional
         Plotly Figure object
     """
     # Load data
-    data = load_data("petrol_prices.csv")
+    data = load_data(csv_path)
 
     # Create and return the plot
     return plot_petrol_prices(data, start_time_str, end_time_str)
@@ -82,6 +84,10 @@ def create_web_plot(start_time_str: Optional[str] = None, end_time_str: Optional
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
 from datetime import datetime, timedelta
+
+parser = argparse.ArgumentParser(description='Fuel Price Box Plot')
+parser.add_argument('csv_file', type=str, help='Path to the CSV file containing fuel price data')
+args = parser.parse_args()
 
 app = Dash(__name__)
 
@@ -110,7 +116,7 @@ def update_graph(start_date, end_date):
         start_date = default_start_date.isoformat()
     if end_date is None:
         end_date = default_end_date.isoformat()
-    return create_web_plot(start_date, end_date)
+    return create_web_plot(args.csv_file, start_date, end_date)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
