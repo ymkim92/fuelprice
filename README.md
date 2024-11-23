@@ -1,4 +1,4 @@
-# Get fuel price of QLD, Australia
+# Get fuel price of QLD, Australia and draw box plots
 
 It collects data from [RACQ web site](https://www.racq.com.au/cars-and-driving/driving/fair-fuel-prices).
 
@@ -13,8 +13,37 @@ If you want to update, use this command:
 pip install -U https://github.com/ymkim92/fuelprice/archive/master.zip
 ```
 
+### local installation
+
+You can install the package locally in "editable" or "development" mode
+using `pip install -e`. Here's how:
+
+1. From the root directory of the project (where `setup.py` is located), run:
+```bash
+pip install -e .
+```
+
+This command will:
+- Install the package in "editable" mode (that's what the `-e` flag does)
+- Create links to your source code instead of copying it
+- Install all required dependencies from `install_requires`
+- Make both commands (`racq_fuel_price` and `fuel-price-dash`) available
+
+After installation, you can verify the commands are available:
+```bash
+# Check if commands are in your path
+which racq_fuel_price
+which fuel-price-dash
+
+# Try running the commands
+racq_fuel_price --help
+fuel-price-dash --help
+```
+
+
 ## Usage
 
+### racq_fuel_price
 ```
 usage: racq_fuel_price [-h] [-l {INFO,DEBUG,WARNING,ERROR}] [-o {stats,raw}]
                        {E10,91,95,98,Diesel,LPG} lat lon
@@ -35,7 +64,7 @@ optional arguments:
                         Output format: statistics only(default), raw data
 ```
 
-## Example
+#### Example
 
 ```
 $ racq_fuel_price 91 -27.5480097 153.09129859999996 -l INFO
@@ -58,10 +87,27 @@ INFO:fuel_price.racq_fuel_price:127.5 7-Eleven Mackenzie
                                 Highest price
                                         ^^^^^^^^^^^^^^^^^^
                                         Mean
-                                
+
 ```
 
 ```
 $ racq_fuel_price 91 -27.5480097 153.09129859999996 -o raw
 2019-08-09T15:45:49, 124.9, 124.9, 125.9, 126.7, 126.9, 126.9, 127.5, 127.5, 127.5, 127.5, 127.5, 127.5, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 127.9, 129.9, 134.9, 165.8, 165.9, 165.9, 165.9, 165.9, 165.9, 165.9, 165.9, 165.9
 ```
+
+### dash app
+
+you can use the dash app in two ways:
+
+1. As a script:
+```bash
+python -m fuel_price.dash_app your_csv_file.csv
+```
+
+2. As an installed command:
+```bash
+fuel-price-dash your_csv_file.csv
+```
+
+After installing the package, both the original `racq_fuel_price` command
+and the new `fuel-price-dash` command will be available in your system.
