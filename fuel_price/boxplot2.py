@@ -52,6 +52,12 @@ def plot_petrol_prices(
         labels={"DateTime": "Date/Time", "Price": "Price (cents)"}
     )
 
+    # Update x-axis to show only the actual timestamps
+    fig.update_xaxes(
+        type='category',  # This makes it categorical instead of continuous
+        tickangle=45,     # Rotate labels for better readability
+        tickformat="%Y-%m-%d %H:%M"
+    )
     return fig
 
 # For web usage, you can create a function that handles the web interface
