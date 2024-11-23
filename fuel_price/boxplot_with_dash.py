@@ -1,9 +1,40 @@
-import pandas as pd
-import plotly.express as px
+"""
+Usage guide for the boxplot_with_dash.py script:
+
+```bash
+# Basic Usage
+python boxplot_with_dash.py path/to/your/fuel_prices.csv
+```
+Example usage description:
+
+```text
+This script creates an interactive web dashboard to visualize fuel prices using box plots.
+
+Input CSV file:
+- CSV file with fuel price data (first column should be datetime, subsequent columns should be
+  fuel prices)
+
+
+Example csv file format:
+```
+2024-11-22T08:00:05,160.9,161.9,163.9,165.9,169.9,170.5,172.9,172.9,172.9,172.9,172.9,172.9,172.9,172.9,173.9,173.9,173.9,173.9,173.9,173.9
+2024-11-22T12:00:04,160.9,161.9,163.9,165.9,169.9,169.9,170.5,170.9,170.9,172.9,172.9,172.9,172.9,172.9,172.9,173.9,173.9,173.9,173.9,173.9
+2024-11-22T16:00:04,160.9,161.9,163.9,165.9,165.9,169.9,169.9,169.9,169.9,169.9,169.9,170.5,170.9,170.9,172.4,172.4,172.9,172.9,173.9,173.9
+2024-11-23T08:00:02,160.9,161.9,163.9,165.9,165.9,169.9,169.9,169.9,169.9,169.9,169.9,169.9,170.5,170.9,170.9,172.4,172.4,172.9,173.9,173.9
+```
+
+The file above can be collected by the `racq_fuel_price` command with `-o raw` option.
+
+"""
+
+import argparse
 from datetime import datetime
 from typing import Optional, Union
+
+import pandas as pd
+import plotly.express as px
 from plotly.graph_objects import Figure
-import argparse
+
 
 def load_data(file_path: str) -> pd.DataFrame:
     """Load and prepare the data from CSV file"""
@@ -12,10 +43,11 @@ def load_data(file_path: str) -> pd.DataFrame:
     data["DateTime"] = pd.to_datetime(data["DateTime"])
     return data
 
+
 def plot_petrol_prices(
     data: pd.DataFrame,
     start_time: Optional[Union[str, datetime]] = None,
-    end_time: Optional[Union[str, datetime]] = None
+    end_time: Optional[Union[str, datetime]] = None,
 ) -> Figure:
     """
     Create a box plot of petrol prices over time
@@ -50,19 +82,22 @@ def plot_petrol_prices(
         x="DateTime",
         y="Price",
         title="Petrol Prices Over Time (Per Timestamp)",
-        labels={"DateTime": "Date/Time", "Price": "Price (cents)"}
+        labels={"DateTime": "Date/Time", "Price": "Price (cents)"},
     )
 
     # Update x-axis to show only the actual timestamps
     fig.update_xaxes(
-        type='category',  # This makes it categorical instead of continuous
-        tickangle=45,     # Rotate labels for better readability
-        tickformat="%Y-%m-%d %H:%M"
+        type="category",  # This makes it categorical instead of continuous
+        tickangle=45,  # Rotate labels for better readability
+        tickformat="%Y-%m-%d %H:%M",
     )
     return fig
 
+
 # For web usage, you can create a function that handles the web interface
-def create_web_plot(csv_path: str, start_time_str: Optional[str] = None, end_time_str: Optional[str] = None) -> Figure:
+def create_web_plot(
+    csv_path: str, start_time_str: Optional[str] = None, end_time_str: Optional[str] = None
+) -> Figure:
     """
     Create plot for web display with optional time filtering
 
@@ -80,13 +115,15 @@ def create_web_plot(csv_path: str, start_time_str: Optional[str] = None, end_tim
     # Create and return the plot
     return plot_petrol_prices(data, start_time_str, end_time_str)
 
+
+from datetime import datetime, timedelta
+
 # Example usage for web:
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
-from datetime import datetime, timedelta
 
-parser = argparse.ArgumentParser(description='Fuel Price Box Plot')
-parser.add_argument('csv_file', type=str, help='Path to the CSV file containing fuel price data')
+parser = argparse.ArgumentParser(description="Fuel Price Box Plot")
+parser.add_argument("csv_file", type=str, help="Path to the CSV file containing fuel price data")
 args = parser.parse_args()
 
 app = Dash(__name__)
@@ -95,21 +132,23 @@ app = Dash(__name__)
 default_end_date = datetime.now().date()
 default_start_date = (datetime.now() - timedelta(weeks=3)).date()
 
-app.layout = html.Div([
-    dcc.DatePickerRange(
-        id='date-picker-range',
-        start_date=default_start_date,
-        end_date=default_end_date,
-        start_date_placeholder_text="Start Date",
-        end_date_placeholder_text="End Date",
-    ),
-    dcc.Graph(id='price-box-plot')
-])
+app.layout = html.Div(
+    [
+        dcc.DatePickerRange(
+            id="date-picker-range",
+            start_date=default_start_date,
+            end_date=default_end_date,
+            start_date_placeholder_text="Start Date",
+            end_date_placeholder_text="End Date",
+        ),
+        dcc.Graph(id="price-box-plot"),
+    ]
+)
+
 
 @app.callback(
-    Output('price-box-plot', 'figure'),
-    [Input('date-picker-range', 'start_date'),
-     Input('date-picker-range', 'end_date')]
+    Output("price-box-plot", "figure"),
+    [Input("date-picker-range", "start_date"), Input("date-picker-range", "end_date")],
 )
 def update_graph(start_date, end_date):
     if start_date is None:
@@ -118,5 +157,6 @@ def update_graph(start_date, end_date):
         end_date = default_end_date.isoformat()
     return create_web_plot(args.csv_file, start_date, end_date)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run_server(debug=True)
