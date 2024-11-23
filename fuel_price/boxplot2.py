@@ -81,12 +81,19 @@ def create_web_plot(start_time_str: Optional[str] = None, end_time_str: Optional
 # Example usage for web:
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
+from datetime import datetime, timedelta
 
 app = Dash(__name__)
+
+# Calculate default dates
+default_end_date = datetime.now().date()
+default_start_date = (datetime.now() - timedelta(weeks=3)).date()
 
 app.layout = html.Div([
     dcc.DatePickerRange(
         id='date-picker-range',
+        start_date=default_start_date,
+        end_date=default_end_date,
         start_date_placeholder_text="Start Date",
         end_date_placeholder_text="End Date",
     ),
@@ -99,6 +106,10 @@ app.layout = html.Div([
      Input('date-picker-range', 'end_date')]
 )
 def update_graph(start_date, end_date):
+    if start_date is None:
+        start_date = default_start_date.isoformat()
+    if end_date is None:
+        end_date = default_end_date.isoformat()
     return create_web_plot(start_date, end_date)
 
 if __name__ == '__main__':
