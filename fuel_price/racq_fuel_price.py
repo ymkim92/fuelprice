@@ -30,23 +30,33 @@ FUEL_DICT = {
 }
 
 
-def get_list(fueltype, lat, lon):
-    """get list"""
+def get_list(fueltype: str, lat: str, lon: str) -> list:
+    """get list of fuel prices from RACQ API
+
+    Args:
+        fueltype (str): Fuel type code from FUEL_DICT
+        lat (str): Latitude coordinate
+        lon (str): Longitude coordinate
+
+    Returns:
+        list: First element is timestamp, followed by fuel prices
+    """
     PARAMS["fueltype"] = fueltype
     PARAMS["lat"] = lat
     PARAMS["lng"] = lon
+
     log.debug("send requests")
     resp = requests.get(url=URL, params=PARAMS, timeout=3)
     log.debug("received requests")
+
     data = resp.json()
-    # print(json.dumps(data, indent=4))
     today_list = [data["Timestamp"].split(".")[0]]
+
     cnt = 0
     for station in data["Stations"]:
         today_list.append(float(station["Price"]))
         if cnt < 10:
             log.info("%s %s", station["Price"], station["Name"])
-
         cnt += 1
 
     return today_list
