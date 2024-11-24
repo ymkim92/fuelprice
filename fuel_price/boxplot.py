@@ -1,7 +1,10 @@
 """without dash"""
+
+from datetime import datetime
+
 import pandas as pd
 import plotly.express as px
-from datetime import datetime
+
 
 def plot_petrol_prices(start_time=None, end_time=None):
     # Read CSV data
@@ -23,7 +26,9 @@ def plot_petrol_prices(start_time=None, end_time=None):
         data_filtered = data_filtered[data_filtered["DateTime"] <= end_time]
 
     # Melt the data for box plot compatibility
-    melted_data = data_filtered.melt(id_vars="DateTime", var_name="Station", value_name="Price")
+    melted_data = data_filtered.melt(
+        id_vars="DateTime", var_name="Station", value_name="Price"
+    )
 
     # Create the box plot with categorical x-axis
     fig = px.box(
@@ -31,17 +36,18 @@ def plot_petrol_prices(start_time=None, end_time=None):
         x="DateTime",
         y="Price",
         title="Petrol Prices Over Time (Per Timestamp)",
-        labels={"DateTime": "Date/Time", "Price": "Price (cents)"}
+        labels={"DateTime": "Date/Time", "Price": "Price (cents)"},
     )
 
     # Update x-axis to show only the actual timestamps
     fig.update_xaxes(
-        type='category',  # This makes it categorical instead of continuous
-        tickangle=45,     # Rotate labels for better readability
-        tickformat="%Y-%m-%d %H:%M"
+        type="category",  # This makes it categorical instead of continuous
+        tickangle=45,  # Rotate labels for better readability
+        tickformat="%Y-%m-%d %H:%M",
     )
 
     fig.show()
+
 
 # Example usage:
 start_time = "2024-11-21T00:00:00"

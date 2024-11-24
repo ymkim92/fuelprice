@@ -1,6 +1,8 @@
 import pandas as pd
 import pytest
+
 from fuel_price.boxplot_with_dash import load_data
+
 
 def test_load_data(tmp_path):
     """Test the load_data function"""
@@ -19,21 +21,19 @@ def test_load_data(tmp_path):
     assert isinstance(df, pd.DataFrame), "Result should be a pandas DataFrame"
     assert list(df.columns)[0] == "DateTime"
     assert len(df) == 2, "DataFrame should have 2 rows"
-    assert pd.api.types.is_datetime64_any_dtype(df["DateTime"]), "DateTime column should be datetime type"
+    assert pd.api.types.is_datetime64_any_dtype(
+        df["DateTime"]
+    ), "DateTime column should be datetime type"
     assert df["Station 1"].dtype == float, "Station 1 column should be float type"
     assert df["Station 2"].dtype == float, "Station 2 column should be float type"
 
     # Test specific values
     pd.testing.assert_series_equal(
-        df["Station 1"],
-        pd.Series([150.1, 151.1], name="Station 1"),
-        check_names=True
+        df["Station 1"], pd.Series([150.1, 151.1], name="Station 1"), check_names=True
     )
 
     # Test datetime parsing
-    expected_dates = pd.to_datetime(['2023-01-01 00:00', '2023-01-01 01:00'])
+    expected_dates = pd.to_datetime(["2023-01-01 00:00", "2023-01-01 01:00"])
     pd.testing.assert_series_equal(
-        df["DateTime"],
-        pd.Series(expected_dates, name="DateTime"),
-        check_names=True
+        df["DateTime"], pd.Series(expected_dates, name="DateTime"), check_names=True
     )

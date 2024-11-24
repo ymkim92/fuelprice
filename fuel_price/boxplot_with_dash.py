@@ -1,6 +1,6 @@
+import os
 from datetime import datetime
 from typing import Optional, Union
-import os
 
 import pandas as pd
 import plotly.express as px
@@ -11,14 +11,14 @@ def load_data(file_path: str) -> pd.DataFrame:
     """Load and prepare the data from CSV file"""
     # First pass to determine maximum number of columns
     with open(file_path) as f:
-        max_cols = max(len(line.strip().split(',')) for line in f)
+        max_cols = max(len(line.strip().split(",")) for line in f)
 
     # Read CSV with the maximum number of columns
     data = pd.read_csv(
         file_path,
         header=None,
-        names=["DateTime"] + [f"Station {i+1}" for i in range(max_cols-1)],
-        on_bad_lines='warn'
+        names=["DateTime"] + [f"Station {i+1}" for i in range(max_cols - 1)],
+        on_bad_lines="warn",
     )
 
     data["DateTime"] = pd.to_datetime(data["DateTime"])
@@ -57,7 +57,9 @@ def plot_petrol_prices(
         data_filtered = data_filtered[data_filtered["DateTime"] <= end_time]
 
     # Melt the data for box plot compatibility
-    melted_data = data_filtered.melt(id_vars="DateTime", var_name="Station", value_name="Price")
+    melted_data = data_filtered.melt(
+        id_vars="DateTime", var_name="Station", value_name="Price"
+    )
 
     # Create title with CSV filename if provided
     base_title = "Petrol Prices Over Time"
@@ -83,7 +85,9 @@ def plot_petrol_prices(
 
 # For web usage, you can create a function that handles the web interface
 def create_web_plot(
-    csv_path: str, start_time_str: Optional[str] = None, end_time_str: Optional[str] = None
+    csv_path: str,
+    start_time_str: Optional[str] = None,
+    end_time_str: Optional[str] = None,
 ) -> Figure:
     """
     Create plot for web display with optional time filtering

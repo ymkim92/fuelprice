@@ -29,14 +29,18 @@ The file above can be collected by the `racq_fuel_price` command with `-o raw` o
 
 import argparse
 from datetime import datetime, timedelta
+
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
 
 from fuel_price.boxplot_with_dash import create_web_plot
 
+
 def main():
     parser = argparse.ArgumentParser(description="Fuel Price Box Plot")
-    parser.add_argument("csv_file", type=str, help="Path to the CSV file containing fuel price data")
+    parser.add_argument(
+        "csv_file", type=str, help="Path to the CSV file containing fuel price data"
+    )
     args = parser.parse_args()
 
     app = Dash(__name__)
@@ -60,7 +64,10 @@ def main():
 
     @app.callback(
         Output("price-box-plot", "figure"),
-        [Input("date-picker-range", "start_date"), Input("date-picker-range", "end_date")],
+        [
+            Input("date-picker-range", "start_date"),
+            Input("date-picker-range", "end_date"),
+        ],
     )
     def update_graph(start_date, end_date):
         if start_date is None:
@@ -70,6 +77,7 @@ def main():
         return create_web_plot(args.csv_file, start_date, end_date)
 
     app.run_server(debug=True)
+
 
 if __name__ == "__main__":
     main()
