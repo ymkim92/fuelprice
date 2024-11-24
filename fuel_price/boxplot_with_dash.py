@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Optional, Union
+import os
 
 import pandas as pd
 import plotly.express as px
@@ -28,6 +29,7 @@ def plot_petrol_prices(
     data: pd.DataFrame,
     start_time: Optional[Union[str, datetime]] = None,
     end_time: Optional[Union[str, datetime]] = None,
+    csv_filename: Optional[str] = None,
 ) -> Figure:
     """
     Create a box plot of petrol prices over time
@@ -36,6 +38,7 @@ def plot_petrol_prices(
         data: DataFrame containing petrol price data
         start_time: Start time for filtering data (ISO format string or datetime object)
         end_time: End time for filtering data (ISO format string or datetime object)
+        csv_filename: Name of the CSV file for the title
 
     Returns:
         Plotly Figure object
@@ -56,12 +59,16 @@ def plot_petrol_prices(
     # Melt the data for box plot compatibility
     melted_data = data_filtered.melt(id_vars="DateTime", var_name="Station", value_name="Price")
 
+    # Create title with CSV filename if provided
+    base_title = "Petrol Prices Over Time"
+    title = f"{base_title} - {csv_filename}" if csv_filename else base_title
+
     # Create the box plot
     fig = px.box(
         melted_data,
         x="DateTime",
         y="Price",
-        title="Petrol Prices Over Time (Per Timestamp)",
+        title=title,
         labels={"DateTime": "Date/Time", "Price": "Price (cents)"},
     )
 
@@ -91,6 +98,7 @@ def create_web_plot(
     """
     # Load data
     data = load_data(csv_path)
+    csv_filename = os.path.basename(csv_path)
 
     # Create and return the plot
-    return plot_petrol_prices(data, start_time_str, end_time_str)
+    return plot_petrol_prices(data, start_time_str, end_time_str, csv_filename)
