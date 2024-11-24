@@ -1,5 +1,4 @@
 import pandas as pd
-import pytest
 
 from fuel_price.boxplot_with_dash import load_data
 
