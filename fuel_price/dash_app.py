@@ -29,14 +29,16 @@ The file above can be collected by the `racq_fuel_price` command with `-o raw` o
 
 import argparse
 from datetime import datetime, timedelta
+from typing import Dict, Any, Optional
 
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
+from plotly.graph_objs import Figure
 
 from fuel_price.boxplot_with_dash import create_web_plot
 
 
-def main():
+def main() -> None:
     """main"""
     parser = argparse.ArgumentParser(description="Fuel Price Box Plot")
     parser.add_argument(
@@ -70,7 +72,7 @@ def main():
             Input("date-picker-range", "end_date"),
         ],
     )
-    def update_graph(start_date, end_date):
+    def update_graph(start_date: Optional[str], end_date: Optional[str]) -> Figure:
         if start_date is None:
             start_date = default_start_date.isoformat()
         if end_date is None:

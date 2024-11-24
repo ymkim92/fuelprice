@@ -3,6 +3,7 @@
 import logging
 import sys
 from argparse import ArgumentParser
+from typing import List, Tuple, Any
 
 import numpy as np
 import requests
@@ -30,7 +31,7 @@ FUEL_DICT = {
 }
 
 
-def get_list(fueltype: str, lat: str, lon: str) -> list:
+def get_list(fueltype: str, lat: str, lon: str) -> List[Any]:
     """get list of fuel prices from RACQ API
 
     Args:
@@ -62,7 +63,7 @@ def get_list(fueltype: str, lat: str, lon: str) -> list:
     return today_list
 
 
-def convert_pricelist_to_string(prices):
+def convert_pricelist_to_string(prices: List[Any]) -> str:
     """convert"""
     price_string = prices[0] + ","
     price_string += ",".join([str(i) for i in prices[1:]])
@@ -70,20 +71,20 @@ def convert_pricelist_to_string(prices):
     return price_string
 
 
-def convert_statistics_to_string(plist, stats):
+def convert_statistics_to_string(plist: List[Any], stats: Tuple[int, float, float, float, float]) -> str:
     """convert"""
     string = plist[0] + ","
     string += ",".join([str(i) for i in stats])
     return string
 
 
-def get_stats(price_list):
+def get_stats(price_list: List[Any]) -> Tuple[int, float, float, float, float]:
     """get stats"""
     flist = [float(x) for x in price_list[1:]]
     return (len(flist), np.min(flist), np.max(flist), np.mean(flist), np.std(flist))
 
 
-def get_arguments():
+def get_arguments() -> ArgumentParser:
     """get arguments from command line"""
     parser = ArgumentParser(description="Get fuel price from RACQ")
     parser.add_argument("fuel_type", type=str, choices=list(FUEL_DICT.keys()), help="Fuel type")
@@ -109,7 +110,7 @@ def get_arguments():
     return parser.parse_args(sys.argv[1:])
 
 
-def set_log_level(log_level):
+def set_log_level(log_level: str) -> None:
     """set log level"""
     if log_level == "DEBUG":
         logl = logging.DEBUG
@@ -123,7 +124,7 @@ def set_log_level(log_level):
     log.setLevel(logl)
 
 
-def main():
+def main() -> None:
     """main"""
     log.debug("started..")
     args = get_arguments()
