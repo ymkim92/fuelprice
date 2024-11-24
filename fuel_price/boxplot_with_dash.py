@@ -8,8 +8,18 @@ from plotly.graph_objects import Figure
 
 def load_data(file_path: str) -> pd.DataFrame:
     """Load and prepare the data from CSV file"""
-    data = pd.read_csv(file_path, header=None)
-    data.columns = ["DateTime"] + [f"Station {i+1}" for i in range(data.shape[1] - 1)]
+    # First pass to determine maximum number of columns
+    with open(file_path) as f:
+        max_cols = max(len(line.strip().split(',')) for line in f)
+
+    # Read CSV with the maximum number of columns
+    data = pd.read_csv(
+        file_path,
+        header=None,
+        names=["DateTime"] + [f"Station {i+1}" for i in range(max_cols-1)],
+        on_bad_lines='warn'
+    )
+
     data["DateTime"] = pd.to_datetime(data["DateTime"])
     return data
 

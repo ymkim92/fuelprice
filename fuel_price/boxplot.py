@@ -5,7 +5,8 @@ from datetime import datetime
 
 def plot_petrol_prices(start_time=None, end_time=None):
     # Read CSV data
-    file_path = "petrol_prices.csv"
+    # file_path = "petrol_prices.csv"
+    file_path = "price_list_E10_4122.csv"
     data = pd.read_csv(file_path, header=None)
     data.columns = ["DateTime"] + [f"Station {i+1}" for i in range(data.shape[1] - 1)]
     data["DateTime"] = pd.to_datetime(data["DateTime"])
