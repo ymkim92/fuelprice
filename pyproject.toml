@@ -15,5 +15,12 @@ fuel-price-dash = "fuel_price.dash_app:main"
 racq_fuel_price = "fuel_price.racq_fuel_price:main"
 
 [tool.setuptools]
-# packages = ["find:"]
-packages = ["fuel_price"] # Explicitly list the package
+packages = ["fuel_price"]
+
+[tool.black]
+line-length = 99
+
+[tool.isort]
+profile = "black"
+line_length = 99
+

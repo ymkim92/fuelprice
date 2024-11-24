@@ -57,9 +57,7 @@ def plot_petrol_prices(
         data_filtered = data_filtered[data_filtered["DateTime"] <= end_time]
 
     # Melt the data for box plot compatibility
-    melted_data = data_filtered.melt(
-        id_vars="DateTime", var_name="Station", value_name="Price"
-    )
+    melted_data = data_filtered.melt(id_vars="DateTime", var_name="Station", value_name="Price")
 
     # Create title with CSV filename if provided
     base_title = "Petrol Prices Over Time"

@@ -86,9 +86,7 @@ def get_stats(price_list):
 def get_arguments():
     """get arguments from command line"""
     parser = ArgumentParser(description="Get fuel price from RACQ")
-    parser.add_argument(
-        "fuel_type", type=str, choices=list(FUEL_DICT.keys()), help="Fuel type"
-    )
+    parser.add_argument("fuel_type", type=str, choices=list(FUEL_DICT.keys()), help="Fuel type")
     parser.add_argument("lat", type=str, help="latitude")
     parser.add_argument("lon", type=str, help="longitude")
     parser.add_argument(
