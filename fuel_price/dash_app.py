@@ -32,7 +32,7 @@ from datetime import datetime, timedelta
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
 
-from boxplot_with_dash import create_web_plot
+from fuel_price.boxplot_with_dash import create_web_plot
 
 def main():
     parser = argparse.ArgumentParser(description="Fuel Price Box Plot")

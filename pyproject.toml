@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=64.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fuel_price"
+version = "1.0"
+description = "Fuel price in Queensland, Australia"
+authors = [{ name = "Youngmin Kim", email = "ymkim92@gmail.com" }]
+license = { text = "WTFPL" }
+dependencies = ["numpy", "requests", "pandas", "plotly", "dash"]
+
+[project.scripts]
+fuel-price-dash = "fuel_price.dash_app:main"
+racq_fuel_price = "fuel_price.racq_fuel_price:main"
+
+[tool.setuptools]
+# packages = ["find:"]
+packages = ["fuel_price"] # Explicitly list the package
