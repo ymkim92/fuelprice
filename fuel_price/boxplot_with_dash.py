@@ -1,3 +1,17 @@
+"""
+A module for analyzing and visualizing petrol price data over time. Provides functionality
+to load petrol price data from CSV files and create interactive box plots using Plotly.
+
+The module includes functions for:
+- Loading and preprocessing CSV data containing petrol prices
+- Creating box plots showing price distributions over time
+- Filtering data by time ranges
+- Web interface integration for interactive visualization
+
+The data format expected is CSV files with a datetime column followed by price columns
+for different petrol stations. The module handles CSVs with varying numbers of stations.
+"""
+
 import os
 from datetime import datetime
 from typing import Optional, Union
@@ -10,7 +24,7 @@ from plotly.graph_objects import Figure
 def load_data(file_path: str) -> pd.DataFrame:
     """Load and prepare the data from CSV file"""
     # First pass to determine maximum number of columns
-    with open(file_path) as f:
+    with open(file_path, encoding="utf-8") as f:
         max_cols = max(len(line.strip().split(",")) for line in f)
 
     # Read CSV with the maximum number of columns

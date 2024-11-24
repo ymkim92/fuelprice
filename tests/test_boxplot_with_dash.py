@@ -1,3 +1,5 @@
+"""test boxplot_with_dash"""
+
 import pandas as pd
 
 from fuel_price.boxplot_with_dash import load_data
