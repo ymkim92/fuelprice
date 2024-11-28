@@ -2,8 +2,8 @@
 """get petrol price from RACQ"""
 import logging
 import sys
-from argparse import ArgumentParser
-from typing import List, Tuple, Any
+from argparse import ArgumentParser, Namespace
+from typing import Any, List, Tuple, Union
 
 import numpy as np
 import requests
@@ -71,20 +71,52 @@ def convert_pricelist_to_string(prices: List[Any]) -> str:
     return price_string
 
 
-def convert_statistics_to_string(plist: List[Any], stats: Tuple[int, float, float, float, float]) -> str:
+def convert_statistics_to_string(
+    plist: List[Any], stats: Tuple[int, float, float, float, float]
+) -> str:
     """convert"""
     string = plist[0] + ","
     string += ",".join([str(i) for i in stats])
     return string
 
 
-def get_stats(price_list: List[Any]) -> Tuple[int, float, float, float, float]:
-    """get stats"""
-    flist = [float(x) for x in price_list[1:]]
-    return (len(flist), np.min(flist), np.max(flist), np.mean(flist), np.std(flist))
+def get_stats(price_list: List[Union[str, float]]) -> Tuple[int, float, float, float, float]:
+    """
+    Calculate statistics (length, min, max, mean, std) for numeric values in the list.
+
+    Args:
+        price_list (List[Union[str, float]]): A list where the first element is ignored,
+                                              and the rest are numeric or convertible to float.
+
+    Returns:
+        Tuple[int, float, float, float, float]:
+            - Count of numeric values.
+            - Minimum value.
+            - Maximum value.
+            - Mean value.
+            - Standard deviation.
+    """
+    try:
+        # Convert values to float (skipping the first value)
+        flist = [float(x) for x in price_list[1:]]
+
+        if not flist:
+            raise ValueError("No numeric data available for computation.")
+
+        # Return computed statistics
+        return (
+            len(flist),
+            float(np.min(flist)),
+            float(np.max(flist)),
+            float(np.mean(flist)),
+            float(np.std(flist)),
+        )
+
+    except ValueError as e:
+        raise ValueError(f"Error processing price list: {e}")
 
 
-def get_arguments() -> ArgumentParser:
+def get_arguments() -> Namespace:
     """get arguments from command line"""
     parser = ArgumentParser(description="Get fuel price from RACQ")
     parser.add_argument("fuel_type", type=str, choices=list(FUEL_DICT.keys()), help="Fuel type")
