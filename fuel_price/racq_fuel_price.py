@@ -63,9 +63,18 @@ def get_list(fueltype: str, lat: str, lon: str) -> List[Any]:
     return today_list
 
 
-def convert_pricelist_to_string(prices: List[Any]) -> str:
-    """convert"""
-    price_string = prices[0] + ","
+def convert_pricelist_to_string(prices: List[Union[str, float]]) -> str:
+    """convert
+    Convert a list of prices to a comma-separated string.
+
+    Args:
+        prices: List where first element is timestamp (str) and rest are prices (float)
+
+    Returns:
+        str: Comma-separated string of timestamp and prices
+    """
+    timestamp = str(prices[0])
+    price_string = timestamp + ","
     price_string += ",".join([str(i) for i in prices[1:]])
 
     return price_string
