@@ -2,3 +2,4 @@ build
 fuel_price.egg-info
 __pycache__
 *.csv
+.coverage

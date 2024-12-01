@@ -3,10 +3,10 @@ run-test:
 run-test-filter TEST:
     pytest -svv tests/*{{TEST}}*
 coverage:
-    pytest --cov=gostop
+    pytest --cov=fuel_price
 coverage-html:
     # check htmlcov folder
-    pytest --cov=gostop --cov-report=html
+    pytest --cov=fuel_price --cov-report=html
 lint:
     ./linting.sh
 mypy:

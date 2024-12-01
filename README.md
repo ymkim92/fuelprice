@@ -18,7 +18,7 @@ pip install -U https://github.com/ymkim92/fuelprice/archive/master.zip
 You can install the package locally in "editable" or "development" mode
 using `pip install -e`. Here's how:
 
-1. From the root directory of the project (where `setup.py` is located), run:
+1. From the root directory of the project (where `pyproject.toml` is located), run:
 ```bash
 pip install -e .
 ```
