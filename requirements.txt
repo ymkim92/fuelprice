@@ -9,5 +9,6 @@ Flake8-pyproject
 mypy
 pandas-stubs
 types-requests
+requests
 pytest
 pytest-cov

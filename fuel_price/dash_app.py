@@ -79,7 +79,11 @@ def main() -> None:
             end_date = default_end_date.isoformat()
         return create_web_plot(args.csv_file, start_date, end_date)
 
-    app.run_server(debug=True)
+    app.run_server(
+        host='0.0.0.0',  # Makes the server publicly available
+        port=8050,       # You can change this port number
+        debug=False      # Set to False in production
+    )
 
 
 if __name__ == "__main__":
