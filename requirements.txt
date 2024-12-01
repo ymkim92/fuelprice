@@ -1,0 +1,13 @@
+pandas
+plotly
+dash
+pylint
+black
+isort
+flake8
+Flake8-pyproject
+mypy
+pandas-stubs
+types-requests
+pytest
+pytest-cov

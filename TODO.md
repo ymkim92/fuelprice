@@ -1,0 +1,5 @@
+- [ ] mypy and lint
+- [X] csv file format (data length)
+- [X] put a file name as the title
+- [ ] review racq_fuel_price.py
+- [x] installation

@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=64.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fuel_price"
+version = "1.0"
+description = "Fuel price in Queensland, Australia"
+authors = [{ name = "Youngmin Kim", email = "ymkim92@gmail.com" }]
+license = { text = "WTFPL" }
+dependencies = ["numpy", "requests", "pandas", "plotly", "dash"]
+
+[project.scripts]
+fuel-price-dash = "fuel_price.dash_app:main"
+racq_fuel_price = "fuel_price.racq_fuel_price:main"
+
+[tool.setuptools]
+packages = ["fuel_price"]
+
+[tool.black]
+line-length = 99
+
+[tool.isort]
+profile = "black"
+line_length = 99
+
+[tool.flake8]
+max-line-length = 99

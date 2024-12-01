@@ -2,7 +2,8 @@
 """get petrol price from RACQ"""
 import logging
 import sys
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
+from typing import Any, List, Tuple, Union
 
 import numpy as np
 import requests
@@ -30,55 +31,105 @@ FUEL_DICT = {
 }
 
 
-def get_list(fueltype, lat, lon):
-    """get list"""
+def get_list(fueltype: str, lat: str, lon: str) -> List[Any]:
+    """get list of fuel prices from RACQ API
+
+    Args:
+        fueltype (str): Fuel type code from FUEL_DICT
+        lat (str): Latitude coordinate
+        lon (str): Longitude coordinate
+
+    Returns:
+        list: First element is timestamp, followed by fuel prices
+    """
     PARAMS["fueltype"] = fueltype
     PARAMS["lat"] = lat
     PARAMS["lng"] = lon
+
     log.debug("send requests")
     resp = requests.get(url=URL, params=PARAMS, timeout=3)
     log.debug("received requests")
+
     data = resp.json()
-    # print(json.dumps(data, indent=4))
     today_list = [data["Timestamp"].split(".")[0]]
+
     cnt = 0
     for station in data["Stations"]:
         today_list.append(float(station["Price"]))
         if cnt < 10:
             log.info("%s %s", station["Price"], station["Name"])
-
         cnt += 1
 
     return today_list
 
 
-def convert_pricelist_to_string(prices):
-    """convert"""
-    price_string = prices[0] + ","
+def convert_pricelist_to_string(prices: List[Union[str, float]]) -> str:
+    """convert
+    Convert a list of prices to a comma-separated string.
+
+    Args:
+        prices: List where first element is timestamp (str) and rest are prices (float)
+
+    Returns:
+        str: Comma-separated string of timestamp and prices
+    """
+    timestamp = str(prices[0])
+    price_string = timestamp + ","
     price_string += ",".join([str(i) for i in prices[1:]])
 
     return price_string
 
 
-def convert_statistics_to_string(plist, stats):
+def convert_statistics_to_string(
+    plist: List[Union[str, float]], stats: Tuple[int, float, float, float, float]
+) -> str:
     """convert"""
-    string = plist[0] + ","
+    timestamp = plist[0]
+    string = str(timestamp) + ","
     string += ",".join([str(i) for i in stats])
     return string
 
 
-def get_stats(price_list):
-    """get stats"""
-    flist = [float(x) for x in price_list[1:]]
-    return (len(flist), np.min(flist), np.max(flist), np.mean(flist), np.std(flist))
+def get_stats(price_list: List[Union[str, float]]) -> Tuple[int, float, float, float, float]:
+    """
+    Calculate statistics (length, min, max, mean, std) for numeric values in the list.
+
+    Args:
+        price_list (List[Union[str, float]]): A list where the first element is ignored,
+                                              and the rest are numeric or convertible to float.
+
+    Returns:
+        Tuple[int, float, float, float, float]:
+            - Count of numeric values.
+            - Minimum value.
+            - Maximum value.
+            - Mean value.
+            - Standard deviation.
+    """
+    try:
+        # Convert values to float (skipping the first value)
+        flist = [float(x) for x in price_list[1:]]
+
+        if not flist:
+            raise ValueError("No numeric data available for computation.")
+
+        # Return computed statistics
+        return (
+            len(flist),
+            float(np.min(flist)),
+            float(np.max(flist)),
+            float(np.mean(flist)),
+            float(np.std(flist)),
+        )
+
+    except ValueError as e:
+        raise ValueError(f"Error processing price list: {e}") from e
 
 
-def get_arguments():
+def get_arguments() -> Namespace:
     """get arguments from command line"""
     parser = ArgumentParser(description="Get fuel price from RACQ")
-    parser.add_argument(
-        "fuel_type", type=str, choices=list(FUEL_DICT.keys()), help="Fuel type"
-    )
+    parser.add_argument("fuel_type", type=str, choices=list(FUEL_DICT.keys()), help="Fuel type")
     parser.add_argument("lat", type=str, help="latitude")
     parser.add_argument("lon", type=str, help="longitude")
     parser.add_argument(
@@ -101,7 +152,7 @@ def get_arguments():
     return parser.parse_args(sys.argv[1:])
 
 
-def set_log_level(log_level):
+def set_log_level(log_level: str) -> None:
     """set log level"""
     if log_level == "DEBUG":
         logl = logging.DEBUG
@@ -115,7 +166,7 @@ def set_log_level(log_level):
     log.setLevel(logl)
 
 
-def main():
+def main() -> None:
     """main"""
     log.debug("started..")
     args = get_arguments()
