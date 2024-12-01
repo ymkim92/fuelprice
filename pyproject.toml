@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fuel_price"
-version = "1.0"
+version = "1.0.1"
 description = "Fuel price in Queensland, Australia"
 authors = [{ name = "Youngmin Kim", email = "ymkim92@gmail.com" }]
 license = { text = "WTFPL" }
