@@ -17,8 +17,8 @@ from datetime import datetime
 from typing import Optional, Union
 
 import pandas as pd
-import plotly.express as px
-from plotly.graph_objects import Figure
+import plotly.express as px  # type: ignore[import-untyped]
+from plotly.graph_objects import Figure  # type: ignore[import-untyped]
 
 
 def load_data(file_path: str) -> pd.DataFrame:

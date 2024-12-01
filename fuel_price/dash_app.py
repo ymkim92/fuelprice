@@ -29,11 +29,11 @@ The file above can be collected by the `racq_fuel_price` command with `-o raw` o
 
 import argparse
 from datetime import datetime, timedelta
-from typing import Dict, Any, Optional
+from typing import Optional
 
-from dash import Dash, dcc, html
-from dash.dependencies import Input, Output
-from plotly.graph_objs import Figure
+from dash import Dash, dcc, html  # type: ignore[import-untyped]
+from dash.dependencies import Input, Output  # type: ignore[import-untyped]
+from plotly.graph_objs import Figure  # type: ignore[import-untyped]
 
 from fuel_price.boxplot_with_dash import create_web_plot
 
@@ -65,7 +65,7 @@ def main() -> None:
         ]
     )
 
-    @app.callback(
+    @app.callback(  # type: ignore[misc]
         Output("price-box-plot", "figure"),
         [
             Input("date-picker-range", "start_date"),

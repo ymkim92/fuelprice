@@ -81,10 +81,11 @@ def convert_pricelist_to_string(prices: List[Union[str, float]]) -> str:
 
 
 def convert_statistics_to_string(
-    plist: List[Any], stats: Tuple[int, float, float, float, float]
+    plist: List[Union[str, float]], stats: Tuple[int, float, float, float, float]
 ) -> str:
     """convert"""
-    string = plist[0] + ","
+    timestamp = plist[0]
+    string = str(timestamp) + ","
     string += ",".join([str(i) for i in stats])
     return string
 
@@ -122,7 +123,7 @@ def get_stats(price_list: List[Union[str, float]]) -> Tuple[int, float, float, f
         )
 
     except ValueError as e:
-        raise ValueError(f"Error processing price list: {e}")
+        raise ValueError(f"Error processing price list: {e}") from e
 
 
 def get_arguments() -> Namespace:
